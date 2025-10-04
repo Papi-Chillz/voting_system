@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Voter Age Groups</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="min-h-screen bg-gray-100 font-sans p-6 flex flex-col items-center">
+
+  <h1 class="text-3xl font-bold text-gray-800 mb-8">Voter Age Groups</h1>
+
+  <!-- Cards -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10 items-center">
+    <% ageStats.forEach(stat => { %>
+        <div class="bg-gradient-to-r from-blue-400 to-blue-600 text-white rounded-xl shadow-lg p-6 flex flex-col items-center">
+        <span class="text-xl font-semibold">Age Group: <%= stat.age_group %></span>
+        <span class="mt-2 text-3xl font-bold">Total: <%= stat.total_voters %></span>
+      </div>
+    <% }) %>
+  </div>
+
+  <!-- Chart -->
+  <div class="w-full max-w-3xl bg-white rounded-xl shadow-lg p-6 mb-6">
+    <canvas id="ageChart"></canvas>
+  </div>
+
+  <div class="text-center mt-6">
+    <a href="/" class="inline-block px-6 py-3 bg-blue-600 text-white font-semibold rounded hover:bg-blue-700 transition">
+      Back to Home
+    </a>
+  </div>
+
+  <script>
+    const ctx = document.getElementById('ageChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: <%- JSON.stringify(ageStats.map(s => s.age_group)) %>,
+        datasets: [{
+          label: 'Total Voters',
+          data: <%- JSON.stringify(ageStats.map(s => s.total_voters)) %>,
+          backgroundColor: '#34d399'
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                return 'Total: ' + context.raw;
+              }
+            }
+          },
+          title: {
+            display: true,
+            text: 'Voter Distribution by Age Group',
+            font: { size: 20 },
+            padding: { top: 10, bottom: 20 }
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            title: { display: true, text: 'Total Voters' }
+          },
+          x: {
+            title: { display: true, text: 'Age Group' }
+          }
+        }
+      }
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Candidate Statistics</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="min-h-screen bg-gray-100 font-sans p-6">
+
+  <header class="text-center mb-10">
+    <h1 class="text-3xl sm:text-4xl font-bold text-gray-800">Candidate Statistics</h1>
+    <p class="text-gray-500 mt-2">Overview by position, ward, and gender</p>
+  </header>
+
+<!-- Number of candidates per position & ward -->
+<!-- Number of candidates per position & ward -->
+<div class="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10">
+    <% positionStats.forEach(stat => { %>
+      <div class="bg-gradient-to-r from-purple-400 to-purple-600 text-white rounded-xl shadow-lg p-6 flex flex-col items-center">
+        <span class="text-xl font-semibold">Position: <%= stat.position_name %></span>
+        <span class="text-lg mt-1">Ward: <%= stat.ward_id || 'N/A' %></span>
+        <span class="text-2xl mt-2 font-bold">Candidates: <%= stat.num_candidates %></span>
+      </div>
+    <% }) %>
+  </div>
+  
+  
+  
+
+  <!-- Gender Distribution Chart -->
+  <div class="max-w-2xl mx-auto bg-white rounded-xl shadow-lg p-6 mb-6">
+    <canvas id="genderChart"></canvas>
+  </div>
+
+  <script>
+    const ctx = document.getElementById("genderChart").getContext("2d");
+    new Chart(ctx, {
+      type: "doughnut",
+      data: {
+        labels: <%- JSON.stringify(genderStats.map(s => s.gender === 'M' ? 'Male' : 'Female')) %>,
+        datasets: [{
+          data: <%- JSON.stringify(genderStats.map(s => s.total_candidates)) %>,
+          backgroundColor: ["#60a5fa", "#f472b6"]
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: "bottom" },
+          title: {
+            display: true,
+            text: "Candidate Gender Distribution",
+            font: { size: 18 },
+            padding: { top: 10, bottom: 20 }
+          }
+        }
+      }
+    });
+  </script>
+
+  <div class="text-center mt-6">
+    <a href="/" class="inline-block px-6 py-3 bg-blue-600 text-white font-semibold rounded hover:bg-blue-700 transition">
+      Back to Home
+    </a>
+  </div>
+
+</body>
+</html>

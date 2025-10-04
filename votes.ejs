@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>All Votes</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="font-sans p-6"
+      style="background-image: url('/components/images/vote7.jpg'); 
+             background-size: cover; 
+             background-position: center; 
+             background-repeat: no-repeat;">
+
+  <div class="max-w-6xl mx-auto bg-white shadow-lg rounded p-8">
+    <h1 class="text-3xl font-bold mb-6 text-center text-blue-700">All Votes</h1>
+
+    <% if (votes.length > 0) { %>
+      <div class="overflow-x-auto">
+        <table class="min-w-full border border-gray-300">
+          <thead class="bg-gray-200">
+            <tr class="text-center">
+              <th class="border px-4 py-2">Vote ID</th>
+              <th class="border px-4 py-2">Voter Name</th>
+              <th class="border px-4 py-2">Constituency</th>
+              <th class="border px-4 py-2">Candidate Name</th>
+              <th class="border px-4 py-2">Party</th>
+              <th class="border px-4 py-2">Election</th>
+              <th class="border px-4 py-2">Position</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% votes.forEach(vote => { %>
+              <tr class="text-center hover:bg-gray-100">
+                <td class="border px-4 py-2"><%= vote.vote_id %></td>
+                <td class="border px-4 py-2 font-medium"><%= vote.voter_name %></td>
+                <td class="border px-4 py-2 font-medium"><%= vote.constituency_name || 'N/A' %></td>
+                <td class="border px-4 py-2 font-semibold"><%= vote.candidate_name %></td>
+                <td class="border px-4 py-2"><%= vote.party_name %></td>
+                <td class="border px-4 py-2"><%= vote.election_name %></td>
+                <td class="border px-4 py-2">
+                  <% if (vote.position_name === 'Member of Parliament') { %>
+                    <span class="text-green-700 font-bold"><%= vote.position_name %></span>
+                  <% } else { %>
+                    <%= vote.position_name %>
+                  <% } %>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="mt-6 text-right text-gray-700 font-semibold">
+        Total Votes Cast: <%= votes.length %>
+      </div>
+    <% } else { %>
+      <p class="text-center text-gray-600 mt-4">No votes found in the database.</p>
+    <% } %>
+
+    <div class="text-center mt-6">
+      <a href="/" class="inline-block px-6 py-3 bg-blue-600 text-white font-semibold rounded hover:bg-blue-700 transition">
+        Back to Home
+      </a>
+    </div>
+  </div>
+</body>
+</html>

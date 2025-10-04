@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Unregistered Candidates</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="min-h-screen bg-gray-50 font-sans p-6">
+
+  <!-- Header -->
+  <header class="text-center mb-10">
+    <h1 class="text-3xl sm:text-4xl font-bold text-gray-800">Unregistered Candidates</h1>
+    <p class="text-gray-500 mt-2">Overview of candidate registration status</p>
+  </header>
+
+  <!-- Stats Cards -->
+  <div class="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+
+    <div class="bg-gradient-to-r from-blue-400 to-blue-600 text-white rounded-xl shadow-lg p-6 flex flex-col items-center">
+      <span class="text-xl font-semibold">Total Candidates</span>
+      <span class="mt-2 text-3xl font-bold"><%= stats.total %></span>
+    </div>
+
+    <div class="bg-gradient-to-r from-green-400 to-green-600 text-white rounded-xl shadow-lg p-6 flex flex-col items-center">
+      <span class="text-xl font-semibold">Registered</span>
+      <span class="mt-2 text-3xl font-bold"><%= stats.registered %></span>
+    </div>
+
+    <div class="bg-gradient-to-r from-red-400 to-red-600 text-white rounded-xl shadow-lg p-6 flex flex-col items-center">
+      <span class="text-xl font-semibold">Not Registered</span>
+      <span class="mt-2 text-3xl font-bold"><%= stats.unregistered %></span>
+    </div>
+
+    <div class="bg-gradient-to-r from-yellow-400 to-yellow-600 text-white rounded-xl shadow-lg p-6 flex flex-col items-center">
+      <span class="text-xl font-semibold">Percentage Not Registered</span>
+      <span class="mt-2 text-3xl font-bold"><%= stats.percent_unregistered.toFixed(2) %>%</span>
+    </div>
+
+  </div>
+
+  <!-- Chart Card -->
+  <div class="max-w-3xl mx-auto bg-white rounded-xl shadow-lg p-6">
+    <canvas id="registrationChart"></canvas>
+  </div>
+
+  <!-- Chart JS -->
+  <script>
+    const ctx = document.getElementById('registrationChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Registered', 'Not Registered'],
+        datasets: [{
+          label: 'Number of Candidates',
+          data: [<%= stats.registered %>, <%= stats.unregistered %>],
+          backgroundColor: ['#16a34a', '#dc2626']
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: false },
+          title: {
+            display: true,
+            text: 'Candidate Registration Status',
+            font: { size: 20 },
+            padding: { top: 10, bottom: 20 }
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            precision: 0,
+            ticks: { stepSize: 1 }
+          }
+        }
+      }
+    });
+  </script>
+
+<div class="text-center mt-6">
+    <a href="/" class="inline-block px-6 py-3 bg-blue-600 text-white font-semibold rounded hover:bg-blue-700 transition">
+      Back to Home
+    </a>
+  </div>
+
+</body>
+</html>

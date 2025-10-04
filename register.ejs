@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Register Voter</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex items-center justify-center min-h-screen font-sans"
+      style="background-image: url('/components/images/vote5.jpg');
+             background-size: cover;
+             background-position: center;
+             background-repeat: no-repeat;">
+
+
+  <div class="bg-white shadow-lg rounded-lg p-8 w-full max-w-md">
+    <h1 class="text-2xl font-bold mb-6 text-center text-blue-700">Register Voter</h1>
+
+    <% if (error) { %>
+      <p class="text-red-600 mb-4 text-center"><%= error %></p>
+    <% } %>
+    <% if (success) { %>
+      <p class="text-green-600 mb-4 text-center"><%= success %></p>
+    <% } %>
+
+    <form method="POST" action="/register" class="space-y-4">
+      <div>
+        <label class="block font-medium mb-1">First Name</label>
+        <input type="text" name="first_name" class="w-full border rounded px-3 py-2" required />
+      </div>
+
+      <div>
+        <label class="block font-medium mb-1">Last Name</label>
+        <input type="text" name="last_name" class="w-full border rounded px-3 py-2" required />
+      </div>
+
+      <div>
+        <label class="block font-medium mb-1">National ID</label>
+        <input type="text" name="nid" class="w-full border rounded px-3 py-2" required />
+      </div>
+
+      <div>
+        <label class="block font-medium mb-1">Gender</label>
+        <select name="gender" class="w-full border rounded px-3 py-2">
+          <option value="">Select Gender</option>
+          <option value="M">Male</option>
+          <option value="F">Female</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="block font-medium mb-1">Date of Birth</label>
+        <input type="date" name="dob" class="w-full border rounded px-3 py-2" required />
+      </div>
+
+      <div>
+        <label class="block font-medium mb-1">Constituency ID</label>
+        <input type="number" name="constituency_id" class="w-full border rounded px-3 py-2" placeholder="Optional" />
+      </div>
+
+      <div>
+        <label class="block font-medium mb-1">Password (leave blank for default)</label>
+        <input type="password" name="password" class="w-full border rounded px-3 py-2" placeholder="Default: 00000000" />
+      </div>
+
+      <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">
+        Register
+      </button>
+    </form>
+
+    <div class="text-center mt-6">
+        <a href="/" class="inline-block px-6 py-3 bg-blue-600 text-white font-semibold rounded hover:bg-blue-700 transition">
+          Back to Home
+        </a>
+      </div>
+      
+  </div>
+
+</body>
+</html>
