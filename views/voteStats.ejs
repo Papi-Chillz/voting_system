@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Voting Statistics</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="min-h-screen bg-gray-50 font-sans p-6">
+
+  <!-- Header -->
+  <header class="text-center mb-10">
+    <h1 class="text-3xl sm:text-4xl font-bold text-gray-800">Voting Statistics</h1>
+    <p class="text-gray-500 mt-2">Overview of voter turnout and gender-based voting</p>
+  </header>
+
+  <!-- Stats Cards -->
+  <div class="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+    <div class="bg-gradient-to-r from-blue-400 to-blue-600 text-white rounded-xl shadow-lg p-6 flex flex-col items-center">
+      <span class="text-xl font-semibold">Total Voters</span>
+      <span class="mt-2 text-3xl font-bold"><%= totalVoters %></span>
+    </div>
+
+    <div class="bg-gradient-to-r from-green-400 to-green-600 text-white rounded-xl shadow-lg p-6 flex flex-col items-center">
+      <span class="text-xl font-semibold">Voted</span>
+      <span class="mt-2 text-3xl font-bold"><%= totalVoted %></span>
+    </div>
+
+    <div class="bg-gradient-to-r from-purple-400 to-purple-600 text-white rounded-xl shadow-lg p-6 flex flex-col items-center">
+      <span class="text-xl font-semibold">Female Voters for Female Candidates</span>
+      <span class="mt-2 text-3xl font-bold"><%= stats.num_female_for_female %></span>
+    </div>
+
+    <div class="bg-gradient-to-r from-orange-400 to-orange-600 text-white rounded-xl shadow-lg p-6 flex flex-col items-center">
+      <span class="text-xl font-semibold">Male Voters for Male Candidates</span>
+      <span class="mt-2 text-3xl font-bold"><%= stats.num_male_for_male %></span>
+    </div>
+  </div>
+
+  <!-- Chart Card -->
+  <div class="max-w-3xl mx-auto bg-white rounded-xl shadow-lg p-6 mb-6">
+    <canvas id="votingChart"></canvas>
+  </div>
+
+  <!-- Chart JS -->
+  <script>
+    const ctx = document.getElementById('votingChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Female Voters → Female Candidates', 'Male Voters → Male Candidates'],
+        datasets: [{
+          label: 'Percentage (%)',
+          data: [<%= Number(stats.pct_female_for_female).toFixed(2) %>, <%= Number(stats.pct_male_for_male).toFixed(2) %>],
+          backgroundColor: ['#8b5cf6', '#f97316']
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: false },
+          title: {
+            display: true,
+            text: 'Voters Supporting Candidates of the Same Gender',
+            font: { size: 20 },
+            padding: { top: 10, bottom: 20 }
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            max: 100,
+            ticks: { stepSize: 10 }
+          }
+        }
+      }
+    });
+  </script>
+
+  <!-- Back Button -->
+  <div class="text-center mt-6">
+    <a href="/" class="inline-block px-6 py-3 bg-blue-600 text-white font-semibold rounded hover:bg-blue-700 transition">
+      Back to Home
+    </a>
+  </div>
+
+</body>
+</html>

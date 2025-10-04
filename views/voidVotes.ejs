@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Void Votes Per Ward</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-100 font-sans p-6">
+
+  <div class="max-w-md mx-auto bg-white shadow-2xl rounded-xl p-8 mt-12">
+    <h1 class="text-3xl font-bold mb-6 text-center text-red-600">Void Votes by Ward</h1>
+
+    <!-- Card -->
+    <% voidStats.forEach(stat => { %>
+      <div class="bg-red-100 text-red-800 rounded-xl shadow-md p-6 flex flex-col items-center mb-6">
+        <span class="text-xl font-semibold">Ward <%= stat.ward_id %></span>
+        <span class="mt-2 text-4xl font-bold"><%= stat.void_count %> Votes</span>
+        <span class="mt-1 text-lg font-medium">(<%= stat.void_percent %>%)</span>
+      </div>
+    <% }) %>
+
+    <!-- Chart -->
+    <div class="w-full mb-6">
+      <canvas id="voidChart"></canvas>
+    </div>
+
+    <div class="text-center">
+      <a href="/" class="inline-block px-6 py-3 bg-blue-600 text-white font-semibold rounded hover:bg-blue-700 transition">
+        Back to Home
+      </a>
+    </div>
+  </div>
+
+  <script>
+    const ctx = document.getElementById("voidChart").getContext("2d");
+    const chart = new Chart(ctx, {
+      type: "doughnut", // better for single entry
+      data: {
+        labels: <%- JSON.stringify(voidStats.map(s => 'Ward ' + s.ward_id)) %>,
+        datasets: [{
+          label: "Void Votes %",
+          data: <%- JSON.stringify(voidStats.map(s => s.void_percent)) %>,
+          backgroundColor: ["#f87171"],
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: 'bottom', labels: { font: { size: 14 } } },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                return context.raw + "%";
+              }
+            }
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>

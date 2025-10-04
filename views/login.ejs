@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Malawi Electoral Commission - Online Voting</title>
+  <link rel="icon" type="image/png" href="/components/images/mec.jpg">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-6 font-sans"
+      style="background-image: url('/components/images/vote4.jpeg'); 
+             background-size: cover; 
+             background-position: center; 
+             background-repeat: no-repeat;">
+
+  <!-- Header / Welcome Banner -->
+  <header class="mb-8 text-center">
+    <img src="/components/images/mec.jpg" alt="MEC Logo" class="mx-auto mb-4 h-24">
+
+    <h1 class="text-4xl font-extrabold text-white-800 mb-2">Welcome to the Malawi Electoral Commission</h1>
+    <p class="text-white-700 text-lg">Online Voting Platform</p>
+  </header>
+
+  <!-- Login Card -->
+  <div class="bg-white shadow-2xl rounded-xl p-8 w-full max-w-md">
+    <h2 class="text-2xl font-bold mb-6 text-center text-blue-700">Login</h2>
+
+    <% if (typeof error !== 'undefined') { %>
+      <p class="text-red-600 mb-4 text-center font-medium"><%= error %></p>
+    <% } %>
+
+    <form method="POST" action="/login" class="space-y-4">
+      <div>
+        <label class="block font-medium mb-1 text-gray-700">National ID (Voter) / Username (Admin)</label>
+        <input type="text" name="username" class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none" required />
+      </div>
+
+      <div>
+        <label class="block font-medium mb-1 text-gray-700">Password</label>
+        <input type="password" name="password" class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none" required />
+      </div>
+
+      <button type="submit" class="w-full bg-blue-600 text-white font-semibold py-2 rounded hover:bg-blue-700 transition">
+        Login
+      </button>
+    </form>
+  </div>
+
+  <!-- Footer / Info -->
+  <footer class="mt-8 text-center text-white text-sm">
+    &copy; <%= new Date().getFullYear() %> Malawi Electoral Commission. All Rights Reserved.
+  </footer>
+  
+
+</body>
+</html>

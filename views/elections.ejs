@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Election Winners</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body class="min-h-screen font-sans p-6"
+      style="background-image: url('/components/images/vote7.jpg'); 
+             background-size: cover; 
+             background-position: center; 
+             background-repeat: no-repeat;">
+
+  <div class="max-w-6xl mx-auto bg-white shadow-lg rounded-lg p-8">
+    <h1 class="text-3xl font-bold mb-6 text-center text-blue-700">Election Winners</h1>
+
+    <% if ((!presidentVPWinners || presidentVPWinners.length === 0) && (!mpLocalWinners || mpLocalWinners.length === 0)) { %>
+      <p class="text-center text-gray-600 mt-4">No election results found.</p>
+    <% } else { %>
+
+      <!-- President & VP Winners -->
+      <section class="mb-12">
+        <h2 class="text-2xl font-semibold text-center text-gray-800 mb-4">President</h2>
+        <% if (presidentVPWinners.length === 0) { %>
+          <p class="text-center text-gray-500">No results for President or VP.</p>
+        <% } else { %>
+          <!-- Table -->
+          <div class="overflow-x-auto mb-6">
+            <table class="min-w-full border border-gray-300">
+              <thead class="bg-gray-200">
+                <tr class="text-center">
+                  <th class="border px-4 py-2">Election</th>
+                  <th class="border px-4 py-2">Position</th>
+                  <th class="border px-4 py-2">Candidate</th>
+                  <th class="border px-4 py-2">Party</th>
+                  <th class="border px-4 py-2">Votes</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% presidentVPWinners.forEach((w, idx) => { %>
+                  <% if (idx === 0 || w.position !== presidentVPWinners[idx-1].position) { %>
+                    <tr class="bg-blue-50 text-center font-semibold">
+                      <td class="border px-4 py-2"><%= w.election_name %></td>
+                      <td class="border px-4 py-2"><%= w.position %></td>
+                      <td class="border px-4 py-2"><%= w.candidate_name %></td>
+                      <td class="border px-4 py-2"><%= w.party_name %></td>
+                      <td class="border px-4 py-2"><%= w.vote_count %></td>
+                    </tr>
+                  <% } %>
+                <% }) %>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Medium Bar Chart -->
+          <div class="mb-6 w-full max-w-2xl mx-auto">
+            <canvas id="presidentBarChart"></canvas>
+          </div>
+
+          <!-- Medium Pie Chart -->
+          <div class="mb-8 w-full max-w-lg mx-auto">
+            <canvas id="presidentPieChart"></canvas>
+          </div>
+        <% } %>
+      </section>
+
+      <!-- MP & Local Government Winners -->
+      <section>
+        <h2 class="text-2xl font-semibold text-center text-gray-800 mb-4">Member of Parliament & Local Government (Top Candidate from Each Party)</h2>
+        <% if (mpLocalWinners.length === 0) { %>
+          <p class="text-center text-gray-500">No results for MP or Local Government.</p>
+        <% } else { %>
+          <!-- Table -->
+          <div class="overflow-x-auto mb-6">
+            <table class="min-w-full border border-gray-300">
+              <thead class="bg-gray-200">
+                <tr class="text-center">
+                  <th class="border px-4 py-2">Election</th>
+                  <th class="border px-4 py-2">Position</th>
+                  <th class="border px-4 py-2">Candidate</th>
+                  <th class="border px-4 py-2">Party</th>
+                  <th class="border px-4 py-2">Votes</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% mpLocalWinners.forEach(w => { %>
+                  <tr class="text-center hover:bg-gray-100">
+                    <td class="border px-4 py-2"><%= w.election_name %></td>
+                    <td class="border px-4 py-2"><%= w.position %></td>
+                    <td class="border px-4 py-2 font-semibold"><%= w.candidate_name %></td>
+                    <td class="border px-4 py-2"><%= w.party_name %></td>
+                    <td class="border px-4 py-2"><%= w.vote_count %></td>
+                  </tr>
+                <% }) %>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Medium Bar Chart -->
+          <div class="mb-6 w-full max-w-2xl mx-auto">
+            <canvas id="mpLocalBarChart"></canvas>
+          </div>
+
+          <!-- Medium Pie Chart -->
+          <div class="mb-8 w-full max-w-lg mx-auto">
+            <canvas id="mpLocalPieChart"></canvas>
+          </div>
+        <% } %>
+      </section>
+
+    <% } %>
+
+    <div class="text-center mt-6">
+      <a href="/" class="inline-block px-6 py-3 bg-blue-600 text-white font-semibold rounded hover:bg-blue-700 transition">
+        Back to Home
+      </a>
+    </div>
+  </div>
+
+  <script>
+    function aggregateByParty(data) {
+      const partyVotes = {};
+      data.forEach(w => {
+        const party = w.party_name;
+        const votes = Number(w.vote_count);
+        if (partyVotes[party]) partyVotes[party] += votes;
+        else partyVotes[party] = votes;
+      });
+      return partyVotes;
+    }
+
+    // President Charts
+    <% if (presidentVPWinners && presidentVPWinners.length > 0) { %>
+      const presidentPartyVotes = aggregateByParty(<%- JSON.stringify(presidentVPWinners) %>);
+      const presidentLabels = Object.keys(presidentPartyVotes);
+      const presidentVotes = Object.values(presidentPartyVotes);
+
+      // Bar Chart (no tilted words)
+      new Chart(document.getElementById('presidentBarChart'), {
+        type: 'bar',
+        data: {
+          labels: presidentLabels,
+          datasets: [{ label: 'Votes', data: presidentVotes, backgroundColor: '#3b82f6' }]
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { display: false }, title: { display: true, text: 'President Votes by Party' } },
+          scales: { 
+            x: { ticks: { autoSkip: false, maxRotation: 0, minRotation: 0 } },
+            y: { beginAtZero: true } 
+          }
+        }
+      });
+
+      // Pie Chart
+      new Chart(document.getElementById('presidentPieChart'), {
+        type: 'pie',
+        data: { labels: presidentLabels, datasets: [{ data: presidentVotes, backgroundColor: ['#3b82f6','#ef4444','#facc15','#10b981','#8b5cf6','#f97316'] }] },
+        options: { responsive: true, plugins: { legend: { position: 'bottom' }, title: { display: true, text: 'President Votes by Party' } } }
+      });
+    <% } %>
+
+    // MP & Local Charts
+    <% if (mpLocalWinners && mpLocalWinners.length > 0) { %>
+      const mpLocalPartyVotes = aggregateByParty(<%- JSON.stringify(mpLocalWinners) %>);
+      const mpLocalLabels = Object.keys(mpLocalPartyVotes);
+      const mpLocalVotes = Object.values(mpLocalPartyVotes);
+
+      // Bar Chart (no tilted words)
+      new Chart(document.getElementById('mpLocalBarChart'), {
+        type: 'bar',
+        data: { labels: mpLocalLabels, datasets: [{ label: 'Votes', data: mpLocalVotes, backgroundColor: '#10b981' }] },
+        options: {
+          responsive: true,
+          plugins: { legend: { display: false }, title: { display: true, text: 'MP & Local Votes by Party' } },
+          scales: { 
+            x: { ticks: { autoSkip: false, maxRotation: 0, minRotation: 0 } },
+            y: { beginAtZero: true } 
+          }
+        }
+      });
+
+      // Pie Chart
+      new Chart(document.getElementById('mpLocalPieChart'), {
+        type: 'pie',
+        data: { labels: mpLocalLabels, datasets: [{ data: mpLocalVotes, backgroundColor: ['#10b981','#3b82f6','#f97316','#facc15','#ef4444','#8b5cf6'] }] },
+        options: { responsive: true, plugins: { legend: { position: 'bottom' }, title: { display: true, text: 'MP & Local Votes by Party' } } }
+      });
+    <% } %>
+  </script>
+</body>
+</html>
