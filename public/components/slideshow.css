@@ -1,0 +1,19 @@
+/* public/css/slideshow.css */
+body, html {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .bg-slideshow {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    z-index: -999; /* very far back */
+    transition: background-image 1s ease-in-out;
+  }
+  
